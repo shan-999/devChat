@@ -57,7 +57,7 @@ export default function Chat_layout() {
 
   return (
     <div className="flex h-screen w-full bg-gray-900 text-gray-100">
-      <Sidebar />
+      <Sidebar setActiveChat={setActiveChat}/>
       <MessageList setActiveChat={setActiveChat} activeChat={activeChat} />
       <ChatArea activeChat={activeChat} />
     </div>

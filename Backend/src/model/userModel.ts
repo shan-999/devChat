@@ -8,17 +8,27 @@ interface Users extends Document {
     password: string,
     createdAt: Date,
     updatedAt: Date,
-    friends: string
+    friends: string[]
     onBording:boolean,
+    bio:string,
+    connectionPreferences:string[],
+    experience:string,
+    languages:string[],
+    profession:string
 }
 
-
+// console.log(bio,connectionPreferences,experience,languages,profession);
 const userSchema = new Schema<Users>({
     userName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     onBording:{type: Boolean},
-    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }]
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "users" }],
+    bio:{type:String},
+    connectionPreferences:[{type:String}],
+    experience:{type:String},
+    languages:[{type:String}],
+    profession:{type:String}
 }, { timestamps: true })
 
 

@@ -1,7 +1,18 @@
 import { Home, MessageSquare, Calendar, Search, Settings } from "lucide-react"
 import api from "@/api/axiosInstense"
+import { User } from "@/types/types"
+import { useDispatch } from "react-redux";
+import { setLogoutState } from "@/Store/slice/auth";
 
-export default function Sidebar() {
+
+interface HandleClickProps {
+  setActiveChat: (user: User | null) => void;
+}
+
+
+export default function Sidebar({ setActiveChat }: HandleClickProps) {
+
+  const dispach = useDispatch()
 
   const handleClick = async () => {
     try {
@@ -18,10 +29,20 @@ export default function Sidebar() {
   }
 
 
+  const logOut = async () => {
+    const respones = await api.post('/logout')
+
+    if(respones.data.success){
+      dispach(setLogoutState())
+    }
+    dispach(setLogoutState())
+  }
+
+
   return (
     <div className="flex flex-col w-16 bg-gray-800 border-r border-gray-700">
       <div className="flex items-center justify-center h-16 bg-violet-600 text-white">
-        <div className="font-bold text-xl">Logo</div>
+        <div className="font-bold text-xl" onClick={logOut}>Logo</div>
       </div>
       <div className="flex-1 flex flex-col items-center py-4 space-y-6">
         <button className="p-2 rounded-lg hover:bg-gray-700 text-violet-400">
@@ -33,7 +54,7 @@ export default function Sidebar() {
         <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400">
           <Calendar className="w-6 h-6" />
         </button>
-        <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400">
+        <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400" onClick={() => {setActiveChat(null)}}>
           <Search className="w-6 h-6" />
         </button>
         <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400" onClick={handleClick}>

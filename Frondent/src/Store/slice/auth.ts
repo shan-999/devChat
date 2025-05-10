@@ -35,7 +35,10 @@ const authSlice = createSlice({
         },
         setLogoutState(state) {
             state.isLogin = false,
-                state.user = null
+            state.user = null
+        },
+        setUser(state, action: PayloadAction<User>) {
+            state.user = action.payload
         }
     },
     extraReducers: (bulider) => {
@@ -59,5 +62,5 @@ const authSlice = createSlice({
 })
 
 
-export const { setLoginState, setLogoutState } = authSlice.actions
+export const { setLoginState, setLogoutState, setUser } = authSlice.actions
 export default authSlice.reducer

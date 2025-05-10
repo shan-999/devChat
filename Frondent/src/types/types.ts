@@ -8,16 +8,42 @@ export interface userData {
 }
 
 
-export interface User extends userData{
-    _id?:string,
-    avatar?:string,
-    online?:string,
-    lastSeen?:string,
-    lastMessage?:string,
-    friends:User[],
-    onBording:boolean
+// export interface User extends userData{
+//     _id?:string,
+//     avatar?:string,
+//     online?:string,
+//     lastSeen?:string,
+//     lastMessage?:string,
+//     friends:User[],
+//     onBording:boolean
+//     createdAt:Date,
+//     updatedAt:Date
+// }
+
+
+export interface UsersData {
+    _id:string,
     createdAt:Date,
     updatedAt:Date
+}
+
+export interface User extends UsersData {
+    userName: string
+    email: string,
+    password: string,
+    createdAt: Date,
+    updatedAt: Date,
+    friends: User[]
+    onBording:boolean,
+    bio:string,
+    connectionPreferences:string[],
+    experience:string,
+    languages:string[],
+    online?:string,
+    avatar?:string,
+    lastSeen?:string,
+    lastMessage?:string
+    profession:string
 }
 
 // type Message = {

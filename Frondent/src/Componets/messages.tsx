@@ -95,15 +95,21 @@ export default function MessageList({ setActiveChat, activeChat }: MessageListPr
   const user = useSelector((state:RootState) => state.auth.user)
 
   useEffect(() => {
+    console.log('yess');
+    
     if (user?.friends) {
       setUsers(user.friends); 
     }
+  }, [user]);
 
+
+  useEffect(() => {
+    
     if(users.length > 1){
       setActiveChat(users[0])
     }
 
-  }, [users]);
+  },[users])
 
 
   return (

@@ -3,6 +3,7 @@ import  loginConroller  from '../controllers/loginController'
 import {verifyTocken} from '../middleware/userAuth'
 // import tockenService from '../controllers/tockenService'
 import { createRefereshTocken, checkTocken } from '../controllers/tockenService';
+import  userContoller  from '../controllers/userContorller';
 const router = express.Router()
 
 
@@ -14,6 +15,11 @@ const router = express.Router()
 
 router.post('/sign-up',loginConroller.signUp)
 router.post('/login',loginConroller.login)
+router.post('/compleate-user-profile/:id',userContoller.compleateUserProfile)
+router.post('/logout',loginConroller.logout)
+
+router.get('/avail-users/:id',verifyTocken,userContoller.getAvileUser)
+router.post('/addfriend/:id',verifyTocken,userContoller.addAFriend)
 
 router.get("/health", (req, res) => {
     res.json({ status: "Server is running" });

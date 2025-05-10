@@ -44,7 +44,6 @@ export const checkTocken = async (req:Request,res:Response) => {
         
         const tocken = req.cookies.access_tocken
         
-        console.log(tocken);
         if (!tocken) {
             res.status(401).json({ success: false, message: 'No Tocken fount' })
             return
