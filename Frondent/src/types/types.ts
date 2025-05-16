@@ -22,9 +22,9 @@ export interface userData {
 
 
 export interface UsersData {
-    _id:string,
-    createdAt:Date,
-    updatedAt:Date
+    _id?:string,
+    createdAt?:Date,
+    updatedAt?:Date
 }
 
 export interface User extends UsersData {

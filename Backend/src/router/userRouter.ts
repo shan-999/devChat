@@ -20,6 +20,7 @@ router.post('/logout',loginConroller.logout)
 
 router.get('/avail-users/:id',verifyTocken,userContoller.getAvileUser)
 router.post('/addfriend/:id',verifyTocken,userContoller.addAFriend)
+router.get('/get-user/:id',verifyTocken,userContoller.getUser)
 
 router.get("/health", (req, res) => {
     res.json({ status: "Server is running" });

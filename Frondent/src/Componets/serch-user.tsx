@@ -91,25 +91,24 @@ const Serch_user = () => {
       }
     }
     setAvailUser()
-
   }, [])
 
 
-const addFriend = async (action:string,friendId:string) => {
-  try {
-    
-    
-    const respones = await api.post(`/addfriend/${user?._id}`,{action,friendId})
+  const addFriend = async (action: string, friendId: string) => {
+    try {
 
-    if(respones.data.success){
-      dispach(setUser(respones.data.user))
+      const respones = await api.post(`/addfriend/${user?._id}`, { action, friendId })
+
+      if (respones.data.success) {
+        console.log("from add user", respones.data.user);
+
+        dispach(setUser(respones.data.user))
+      }
+
+    } catch (error) {
+      console.log('error from addfriend : ', error);
     }
-
-  } catch (error) {
-    console.log('error from addfriend : ',error);
-    
   }
-}
 
   // const filteredUsers = availableUsers?.filter((user) => {
   //     // Filter by search query
@@ -201,7 +200,10 @@ const addFriend = async (action:string,friendId:string) => {
                       <h3 className="font-medium">{user.userName}</h3>
                       <p className="text-sm text-gray-400">{user.bio}</p>
                     </div>
-                    <button className="p-2 rounded-full bg-violet-600 text-white hover:bg-violet-700" onClick={() => addFriend('add',user._id)}>
+                    <button className="p-2 rounded-full bg-violet-600 text-white hover:bg-violet-700"
+                      onClick={() => {
+                        if (user?._id) addFriend('add', user._id)
+                      }}>
                       <UserPlus className="w-4 h-4" />
                     </button>
                   </div>

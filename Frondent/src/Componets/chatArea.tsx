@@ -76,40 +76,41 @@
 import type React from "react"
 import { useState } from "react"
 import { Phone, MoreVertical, Paperclip, Send, MessageSquare } from "lucide-react"
-import { User } from "@/types/types"
 import { useEffect } from "react"
 import { socketServies } from "../services/socket";
-import { addMessage } from "@/Store/slice/chatSlice"
+import { addMessage, setUserSocketId } from "@/Store/slice/chatSlice"
 import { ChatMessage } from "@/types/types"
 import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
 import { RootState } from "@/Store/store"
 import Serch_user from "./serch-user"
 
-type ChatAreaProps = {
-  activeChat: User | null
-}
 
 
 
 
-export default function ChatArea({ activeChat }: ChatAreaProps) {
+
+export default function ChatArea() {
   const [newMessage, setNewMessage] = useState("")
   // const [messages, setMessages] = useState<Message[]>()
   
   const dispach = useDispatch()
   const messages = useSelector((state: RootState) => state.chat.messages);
   const user = useSelector((state: RootState) => state.auth.user)
+  const activeChat = useSelector((state:RootState) => state.activeChat.activeChat)
+  const userSocketId = useSelector((state:RootState) => state.chat.userId)
+  const reciverSocketId = useSelector((state:RootState) => state.chat.reciverId)
 
 
 
 
   useEffect(() => {
-    if(user?._id){
+    if(user?._id){      
       const socket = socketServies.connect(user?._id);
-
+      console.log('socket ',socket);
+      // dispach(setUserSocketId(socket.id as string))
       socket.on("receivePrivateMessage", (data: ChatMessage) => {
-        dispach(addMessage(data));
+        dispach(addMessage(data));        
       });
     }
 
@@ -118,7 +119,10 @@ export default function ChatArea({ activeChat }: ChatAreaProps) {
     };
   }, [dispach, user]);
 
-
+useEffect(() => {
+  console.log("form useEffect usersocket id",userSocketId);
+  
+},[userSocketId])
 
   const handleSendMessage = () => {
     // if (newMessage.trim()) {
@@ -133,14 +137,16 @@ export default function ChatArea({ activeChat }: ChatAreaProps) {
     // }
 
     if (newMessage.trim()) {
+      console.log(newMessage);
+      
       const socket = socketServies.getSocket();
       if (socket) {
-        console.log(activeChat?._id);
+        console.log("user socket id",userSocketId);
         
         socket.emit("sendPrivateMessage", {
           senderId: user?._id,
-          resiverId:activeChat?._id,
-          newMessage,
+          receiverId:reciverSocketId,
+          message:newMessage
         });
         setNewMessage("");
       }

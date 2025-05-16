@@ -1,16 +1,17 @@
 import { Home, MessageSquare, Calendar, Search, Settings } from "lucide-react"
 import api from "@/api/axiosInstense"
-import { User } from "@/types/types"
 import { useDispatch } from "react-redux";
 import { setLogoutState } from "@/Store/slice/auth";
+import { clearActiveChat, setActivateSerch } from "@/Store/slice/activeChat";
+import { persistor,store } from "@/Store/store";
 
 
-interface HandleClickProps {
-  setActiveChat: (user: User | null) => void;
-}
+// interface HandleClickProps {
+//   setActiveChat: (user: User | null) => void;
+// }
 
 
-export default function Sidebar({ setActiveChat }: HandleClickProps) {
+export default function Sidebar() {
 
   const dispach = useDispatch()
 
@@ -32,8 +33,11 @@ export default function Sidebar({ setActiveChat }: HandleClickProps) {
   const logOut = async () => {
     const respones = await api.post('/logout')
 
-    if(respones.data.success){
+    if (respones.data.success) {
       dispach(setLogoutState())
+      persistor.purge();
+
+      store.dispatch({ type: 'RESET_STORE' }); 
     }
     dispach(setLogoutState())
   }
@@ -54,7 +58,10 @@ export default function Sidebar({ setActiveChat }: HandleClickProps) {
         <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400">
           <Calendar className="w-6 h-6" />
         </button>
-        <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400" onClick={() => {setActiveChat(null)}}>
+        <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400" onClick={() => {
+          dispach(clearActiveChat())
+          dispach(setActivateSerch(true))
+        }}>
           <Search className="w-6 h-6" />
         </button>
         <button className="p-2 rounded-lg hover:bg-gray-700 text-gray-400" onClick={handleClick}>

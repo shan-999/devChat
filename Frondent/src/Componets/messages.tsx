@@ -71,6 +71,10 @@ import { Search, ChevronDown, PlusCircle } from "lucide-react"
 import { User } from "@/types/types"
 import { useSelector } from "react-redux"
 import { RootState } from "@/Store/store"
+import { setActiveChat,clearActiveChat, setActivateSerch } from "@/Store/slice/activeChat"
+import { useDispatch } from "react-redux"
+import { setUserSocketId, setReciverSocketId } from "@/Store/slice/chatSlice"
+import { socketServies } from "@/services/socket"
 
 // type User = {
 //   id: string
@@ -82,21 +86,18 @@ import { RootState } from "@/Store/store"
 //   tags?: string[]
 // }
 
-type MessageListProps = {
-  setActiveChat: (user: User | null) => void
-  activeChat: User | null
-}
 
-export default function MessageList({ setActiveChat, activeChat }: MessageListProps) {
+export default function MessageList() {
   const [searchQuery, setSearchQuery] = useState("")
   const [users,setUsers] = useState<User[]>([])
   
 
   const user = useSelector((state:RootState) => state.auth.user)
+  const activeChat = useSelector((state:RootState) => state.activeChat.activeChat)
+  const isSerchActive = useSelector((state:RootState) => state.activeChat.activateSerch)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('yess');
-    
     if (user?.friends) {
       setUsers(user.friends); 
     }
@@ -104,12 +105,26 @@ export default function MessageList({ setActiveChat, activeChat }: MessageListPr
 
 
   useEffect(() => {
-    
-    if(users.length > 1){
-      setActiveChat(users[0])
+    if(users.length >= 1 && !isSerchActive){
+      dispatch(setActiveChat(users[0]))
     }
-
   },[users])
+
+
+  const handleAddButton = () => {
+    dispatch(setActivateSerch(true))
+    dispatch(clearActiveChat())
+  }
+
+  const handleSelectChat = (user:User) => {
+     dispatch(setActiveChat(user))
+   if(user && user._id){
+     const socket = socketServies.connect(user._id)
+     console.log(socket);
+          
+     dispatch(setReciverSocketId(user._id))
+   }
+  }
 
 
   return (
@@ -120,7 +135,7 @@ export default function MessageList({ setActiveChat, activeChat }: MessageListPr
           <ChevronDown className="w-5 h-5 ml-1" />
           <span className="ml-2 text-xs bg-gray-700 px-1.5 py-0.5 rounded-md">12</span>
         </div>
-        <button className="p-1 rounded-full bg-violet-600 text-white" onClick={() => setActiveChat(null)}>
+        <button className="p-1 rounded-full bg-violet-600 text-white" onClick={handleAddButton}>
           <PlusCircle className="w-5 h-5" />
         </button>
       </div>
@@ -144,7 +159,7 @@ export default function MessageList({ setActiveChat, activeChat }: MessageListPr
             <div
               key={user._id}
               className={`flex items-start p-3 hover:bg-gray-700 cursor-pointer ${activeChat && activeChat._id === user._id ? "bg-gray-700" : ""}`}
-              onClick={() => setActiveChat(user)}
+              onClick={() => handleSelectChat(user)}
             >
               <div className="relative">
                 <img src={user.avatar || "/placeholder.svg"} alt={user.userName} className="w-10 h-10 rounded-full" />

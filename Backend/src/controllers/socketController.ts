@@ -14,13 +14,14 @@ export const handleSocketEvents = (socket: Socket, io: Server) => {
 
     socket.on("sendPrivateMessage", ({ senderId, receiverId, message }: PrivateMessage) => {
         const receiverSocketId = users[receiverId];
-        console.log('dfsd',message);
-        
+        console.log("from socket io senderId:" ,senderId);
         if (receiverSocketId) {
             // Send message to receiver
+            
             io.to(receiverSocketId).emit("receivePrivateMessage", { senderId, message });
             // Send message back to sender
             io.to(users[senderId]).emit("receivePrivateMessage", { senderId, message });
+            console.log("from socket io:" ,message);
         } else {
             console.log(`User ${receiverId} not found`);
         }

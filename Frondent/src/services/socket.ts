@@ -11,6 +11,8 @@ class SocketServies {
             reconnectionAttempts:5
         })
 
+        console.log("userid",userId);
+        
 
         this.socket.on('connect', () => {
             console.log('connected to socket io server');

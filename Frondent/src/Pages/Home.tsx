@@ -11,8 +11,10 @@ import { User } from "@/types/types"
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { RootState } from "@/Store/store"
-import { useNavigate } from "react-router-dom"
-import  ProfilePage  from '../Componets/profileCompletion'
+import ProfilePage from '../Componets/profileCompletion'
+import api from "@/api/axiosInstense"
+import { useDispatch } from "react-redux"
+import { setUser } from "@/Store/slice/auth"
 
 
 // type User = {
@@ -27,39 +29,49 @@ import  ProfilePage  from '../Componets/profileCompletion'
 
 export default function Chat_layout() {
 
-  const [activeChat, setActiveChat] = useState<User | null>(
-    //   {
-    //   id: "1",
-    //       name: "Aayush Patel",
-    //       avatar: "/placeholder.svg?height=40&width=40",
-    //       online: true,
-    //       lastMessage: "omg, this is amazing",
-    // }
-    null
-  )
-  const [onBording,setOnBording] = useState(false)
+  // const [activeChat, setActiveChat] = useState<User | null>(
+  //   //   {
+  //   //   id: "1",
+  //   //       name: "Aayush Patel",
+  //   //       avatar: "/placeholder.svg?height=40&width=40",
+  //   //       online: true,
+  //   //       lastMessage: "omg, this is amazing",
+  //   // }
+  //   null
+  // )
 
-  const user = useSelector((state:RootState) => state.auth.user)
-  const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   if(!user?.onBording){
-  //     setOnBording(false)
-  //   }
-  // },[])
+  const user = useSelector((state: RootState) => state.auth.user)
+  const dispach = useDispatch()
 
 
 
-  if(!user?.onBording){
-    return (<ProfilePage/>)
+  useEffect(() => {
+    const updateUser = async () => {
+      try {
+        const respones = await api.get(`/get-user/${user?._id}`)
+
+        if (respones.data.success) {
+          dispach(setUser(respones.data.user))
+        }
+      } catch (error) {
+        console.log('error form update user : ', user);
+      }
+    }
+    updateUser()
+  }, [])
+
+
+
+  if (user && !user?.onBording) {
+    return (<ProfilePage />)
   }
 
 
   return (
     <div className="flex h-screen w-full bg-gray-900 text-gray-100">
-      <Sidebar setActiveChat={setActiveChat}/>
-      <MessageList setActiveChat={setActiveChat} activeChat={activeChat} />
-      <ChatArea activeChat={activeChat} />
+      <Sidebar />
+      <MessageList/>
+      <ChatArea  />
     </div>
   )
 }

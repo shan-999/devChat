@@ -38,7 +38,7 @@ const authSlice = createSlice({
             state.user = null
         },
         setUser(state, action: PayloadAction<User>) {
-            state.user = action.payload
+            state.user = action.payload 
         }
     },
     extraReducers: (bulider) => {
@@ -46,17 +46,17 @@ const authSlice = createSlice({
 
             .addCase(checkTocken.pending, (state) => {
                 state.isLogin = false,
-                    state.user = null
+                state.user = null
             })
 
             .addCase(checkTocken.rejected, (state) => {
                 state.isLogin = false,
-                    state.user = null
+                state.user = null
             })
 
             .addCase(checkTocken.fulfilled, (state, action) => {
                 state.isLogin = true,
-                    state.user = action.payload
+                state.user = action.payload
             })
     }
 })

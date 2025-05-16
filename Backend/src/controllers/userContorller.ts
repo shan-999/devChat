@@ -82,6 +82,8 @@ const addAFriend = async (req:Request,res:Response) => {
         }
 
         if(action === 'add'){
+            console.log('yess here');
+            
             if(!user.friends.includes(friendId)){
                 user.friends.push(friendId)
             }
@@ -94,18 +96,35 @@ const addAFriend = async (req:Request,res:Response) => {
 
             }
         }
+        await user.save()
 
-        user.save()
 
         const populatedData = await userModel.findById(userId).populate('friends')
+        
 
-        res.status(200).json({success:true,populatedData})
+        res.status(200).json({success:true,user:populatedData})
     } catch (error) {
         
     }
 } 
 
 
+const getUser = async (req:Request,res:Response) => {
+    try {
+        const userId = req.params.id
+
+        const user = await userModel.findById(userId).populate('friends')
+
+        if(!user){
+            res.status(400).json({success:false,message:'user not fount'})
+        }
+
+        res.status(200).json({success:true,user})
+        
+    } catch (error) {
+        
+    }
+}
 
 
 
@@ -113,5 +132,6 @@ const addAFriend = async (req:Request,res:Response) => {
 export = {
     compleateUserProfile,
     getAvileUser,
-    addAFriend
+    addAFriend,
+    getUser
 }
